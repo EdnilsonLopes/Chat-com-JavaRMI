@@ -6,6 +6,10 @@ import java.util.Scanner;
 public class ClienteChat extends UnicastRemoteObject implements ClienteChatInterface {
     public static final long serialVersionUID = 1L;
 
+    public ClienteChat() throws RemoteException{
+        super();
+    }
+
     public static void main(String[] args) {
         UsuarioVO usuario = new UsuarioVO();
         ServidorChatInterface conServe;

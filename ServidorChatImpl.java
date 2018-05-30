@@ -1,5 +1,8 @@
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ServidorChatImpl extends UnicastRemoteObject implements ServidorChatInterface {
-
+    public static final long serialVersionUID = 1L;
     /**
      * Lista de Clientes conectados.
      */
@@ -20,14 +23,18 @@ public class ServidorChatImpl extends UnicastRemoteObject implements ServidorCha
     private Set<String> nomesUsuarios = new HashSet<>();
 
     /**
-     * Guarda todas as menságens enviadas pelos usuários com uma chave.
-     * A chave é o nome do destinatário caso seja privada ou "todos" para mensagem publica.
+     * Guarda todas as menságens enviadas pelos usuários com uma chave. A chave é 
+     *  nome do destinatário caso seja privada ou "todos" para mensagem publica.
      */
     private Map<String, String> mensagens = new HashMap<>();
 
+    public ServidorChatImpl() throws RemoteException {
+        super();
+    };
+
     public static void main(String[] args) {
         try {
-            Naming.rebind("ServidorChat", obj);
+            Naming.rebind("ServidorChat", new ServidorChatImpl());
             System.out.print("Servidor de Chat Iniciado.");
         } catch (Exception e) {
             System.out.print("Erro: " + e);
@@ -53,19 +60,19 @@ public class ServidorChatImpl extends UnicastRemoteObject implements ServidorCha
     public void desconectaCliente(UsuarioVO usuario) throws RemoteException {
         clientesConectados.remove(usuario);
         nomesUsuarios.remove(usuario.getNome());
-        System.out.println("Usuário "+usuario.getNome()+ " saiu");
+        System.out.println("Usuário "+ usuario.getNome()+  " saiu");
     }
 
     @Override
     public void enviaMensagemPrivada(UsuarioVO usuario, UsuarioVO receptor, String msg) {
-        mensagens.put(receptor.getNome(), "Mensagem\n---------------"+usuario.getNome()+": "+msg);
-        System.out.print("Mensagem enviada de "+usuario.getNome()+" para "+ receptor.getNome());
+        mensagens.put(receptor.getNome(), "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
+        System.out.print("Mensagem enviada de " + usuario.getNome() + " para " + receptor.getNome());
     }
 
     @Override
     public void enviaMensagemTodos(UsuarioVO usuario, String msg) throws RemoteException {
-        mensagens.put("todos", "Mensagem\n---------------"+usuario.getNome()+": "+msg);
-        System.out.print("Mensagem enviada de "+usuario.getNome()+" para todos");
+        mensagens.put("todos", "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
+        System.out.print("Mensagem enviada de " + usuario.getNome() + " para todos");
     }
 
 }
