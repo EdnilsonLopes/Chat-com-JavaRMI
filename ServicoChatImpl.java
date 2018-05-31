@@ -28,6 +28,8 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
      */
     public Map<String, String> mensagens = new HashMap<>();
 
+    private int contador = 0;
+
     public ServicoChatImpl() throws RemoteException {
         super();
     }
@@ -36,6 +38,7 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     public void conectaCliente(UsuarioVO usuario) throws RemoteException{
         clientesConectados.add(usuario);
         nomesUsuarios.add(usuario.getNome());
+        //contador += nomesUsuarios.size();
         System.out.println("O Usuário "+ usuario.getNome()+ "  conectou-se");
     }
 
@@ -43,13 +46,14 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     public void desconectaCliente(UsuarioVO usuario) throws RemoteException {
         clientesConectados.remove(usuario);
         nomesUsuarios.remove(usuario.getNome());
+        //contador += nomesUsuarios.size();
         System.out.println("Usuário "+usuario.getNome()+" saiu");
     }
 
     @Override
-    public void enviaMensagemPrivada(UsuarioVO usuario, UsuarioVO receptor, String msg) throws RemoteException {
-        mensagens.put(receptor.getNome(), "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
-        System.out.print("Mensagem enviada de " + usuario.getNome() + " para " + receptor.getNome());
+    public void enviaMensagemPrivada(UsuarioVO usuario, String receptor, String msg) throws RemoteException {
+        mensagens.put(receptor, "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
+        System.out.print("Mensagem enviada de " + usuario.getNome() + " para " + receptor);
     }
 
     @Override
@@ -61,6 +65,19 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     @Override
     public Set<String> getNomesUsuariosConectados() throws RemoteException{
         return nomesUsuarios;
+    }
+
+    @Override
+    public String getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException {
+        String msg = "";
+        if (getMensagens().containsKey(usuario.getNome())){
+            msg += getMensagens().get(usuario.getNome())+"\n";
+            getMensagens().remove(usuario.getNome());
+        }
+        if (getMensagens().containsKey("todos")){
+            msg += getMensagens().get("todos")+"\n";
+        }
+        return msg;
     }
 
     /**

@@ -22,7 +22,7 @@ public interface ServicoChat extends Remote{
      * @param receptor Usuário (Cliente) que recebe a mensagem
      * @param msg Mensagem enviada
      */
-    public void enviaMensagemPrivada(UsuarioVO usuario, UsuarioVO receptor, String msg) throws RemoteException;
+    public void enviaMensagemPrivada(UsuarioVO usuario, String receptor, String msg) throws RemoteException;
 
     /**
      * Desconecta um cliente do servidor do chat.
@@ -34,4 +34,9 @@ public interface ServicoChat extends Remote{
      * Pega todos os nomes dos usuários conectados.
      */
     public Set<String> getNomesUsuariosConectados() throws RemoteException;
+
+    /**
+     * Pega as mensagens enviadas ao Usuario parassado como parametro.
+     */
+    public String getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException; 
 }

@@ -18,7 +18,7 @@ public class ClienteChat {
         String mensagem = "";
         try {
             conServe = (ServicoChat) Naming.lookup("//localhost/ServidorChat");
-            cliente.setUsuariosOnline(conServe.getNomesUsuariosConectados());
+            
             System.out.print("Digite seu nome: ");
             Scanner leia = new Scanner(System.in);
             String nome = leia.nextLine();
@@ -26,11 +26,15 @@ public class ClienteChat {
             conServe.conectaCliente(usuario);
             System.out.println("Está Conectado "+ usuario.getNome());
             cliente.setMeuUsuario(usuario);
-            while (mensagem != "sair") {
+            System.out.println("Digite \"sair\" a qualquer momento para sair.");
+            while (!mensagem.equals("sair")) {
+                cliente.setUsuariosOnline(conServe.getNomesUsuariosConectados());
                 cliente.mostraUsuariosOnline();
-                System.out.print("Digite o nome do destinatário: ");
+                cliente.recebeMensagem(conServe);
+                System.out.print("Digite \"todos\" ou nome do destinatário: ");
                 String dest = leia.next();
-                if(dest == "sair"){
+                if(dest.equals("sair")){
+                    conServe.desconectaCliente(usuario);
                     System.exit(1);
                 }
                 if(cliente.isUsuarioOnline(dest)){
@@ -41,6 +45,8 @@ public class ClienteChat {
                     System.out.println("O usuário : "+dest+" não está online");
                 }
             }
+            System.out.println("Você se desconectou");
+            conServe.desconectaCliente(usuario);
 
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
@@ -48,12 +54,25 @@ public class ClienteChat {
         }
     }
 
-    public void recebeMensagem(String msg) throws RemoteException {
-        System.out.println(msg);
+    /**
+     * Método que mostra as mensagens pro usuario
+     */
+    public void recebeMensagem(ServicoChat serv) throws RemoteException {
+        String msg = serv.getMensagensEnvidadasParaUsuario(getMeuUsuario());
+        if (!msg.equals("")){
+            System.out.print("\n----Novas Mensagens----- \n");
+            System.out.println(msg);
+        }
+        //System.out.println(msg);
     }
 
+    /**
+     * Método que verifica se o usuário está online
+     * @param nomeUsuario Nome do usuario que será verificado.
+     * @return true para online false para offline
+     */
     public boolean isUsuarioOnline(String nomeUsuario) throws RemoteException {
-        if (getUsuariosOnline().contains(nomeUsuario)) {
+        if (getUsuariosOnline().contains(nomeUsuario) || nomeUsuario.equals("todos")) {
             return true;
         }
         return false;
@@ -63,7 +82,7 @@ public class ClienteChat {
         if(nomeDestinatario.equalsIgnoreCase("todos")){
             servico.enviaMensagemTodos(getMeuUsuario(), msg);
         }else{
-            //servico.enviaMensagemPrivada(getMeuUsuario(), nomeDestinatario, msg);
+            servico.enviaMensagemPrivada(getMeuUsuario(), nomeDestinatario, msg);
         }
     }
 
