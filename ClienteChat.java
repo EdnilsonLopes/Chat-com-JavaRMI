@@ -3,18 +3,13 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
-public class ClienteChat extends UnicastRemoteObject implements ClienteChatInterface {
-    public static final long serialVersionUID = 1L;
-
-    public ClienteChat() throws RemoteException{
-        super();
-    }
+public class ClienteChat {
 
     public static void main(String[] args) {
         UsuarioVO usuario = new UsuarioVO();
-        ServidorChatInterface conServe;
+        ServicoChat conServe;
         try {
-            conServe = (ServidorChatInterface) Naming.lookup("//localhost/ServidorChat");
+            conServe = (ServicoChat) Naming.lookup("//localhost/ServidorChat");
             System.out.print("Digite seu nome: ");
             Scanner leia = new Scanner(System.in);
             String nome = leia.nextLine();
@@ -27,7 +22,6 @@ public class ClienteChat extends UnicastRemoteObject implements ClienteChatInter
         }
     }
 
-    @Override
     public void recebeMensagem(String msg) throws RemoteException {
         System.out.println(msg);
     }
