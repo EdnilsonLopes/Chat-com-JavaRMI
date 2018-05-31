@@ -32,14 +32,14 @@ public class ClienteChat {
                 cliente.mostraUsuariosOnline();
                 cliente.recebeMensagem(conServe);
                 System.out.print("Digite \"todos\" ou nome do destinatário: ");
-                String dest = leia.next();
+                String dest = leia.nextLine();
                 if(dest.equals("sair")){
                     conServe.desconectaCliente(usuario);
                     System.exit(1);
                 }
                 if(cliente.isUsuarioOnline(dest)){
                     System.out.print("Digite sua mensagem: ");
-                    mensagem = leia.next();
+                    mensagem = leia.nextLine();
                     cliente.enviarMensagem(conServe, dest, mensagem);
                 }else{
                     System.out.println("O usuário : "+dest+" não está online");
