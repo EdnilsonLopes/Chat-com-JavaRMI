@@ -1,5 +1,6 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Set;
 
 public interface ServicoChat extends Remote{
     /**
@@ -28,4 +29,9 @@ public interface ServicoChat extends Remote{
      * @param usuario Cliente que será desconectado
      */
     public void desconectaCliente(UsuarioVO usuario) throws RemoteException;
+
+    /**
+     * Pega todos os nomes dos usuários conectados.
+     */
+    public Set<String> getNomesUsuariosConectados() throws RemoteException;
 }

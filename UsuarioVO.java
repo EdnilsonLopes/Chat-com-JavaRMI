@@ -1,7 +1,7 @@
 import java.io.Serializable;
 
 /**
- * Classe responsável por um usuário conectado.
+ * Classe responsável por um usuário
  */
 public class UsuarioVO implements Serializable {
 

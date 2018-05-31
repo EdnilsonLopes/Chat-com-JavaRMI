@@ -57,4 +57,31 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
         mensagens.put("todos", "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
         System.out.print("Mensagem enviada de " + usuario.getNome() + " para todos");
     }
+    
+    @Override
+    public Set<String> getNomesUsuariosConectados() throws RemoteException{
+        return nomesUsuarios;
+    }
+
+    /**
+     * @return os clientesConectados
+     */
+    public List<UsuarioVO> getClientesConectados() {
+        return clientesConectados;
+    }
+
+    /**
+     * @return as mensagens
+     */
+    public Map<String, String> getMensagens() {
+        return mensagens;
+    }
+
+    /**
+     * @return os nomesUsuarios
+     */
+    public Set<String> getNomesUsuarios() {
+        return nomesUsuarios;
+    }
+
 }
