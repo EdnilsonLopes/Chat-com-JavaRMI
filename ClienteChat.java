@@ -4,6 +4,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.io.File;
 
 public class ClienteChat {
 
@@ -24,15 +25,19 @@ public class ClienteChat {
             String nome = leia.nextLine();
             usuario.setNome(nome);
             conServe.conectaCliente(usuario);
-            System.out.println("Está Conectado "+ usuario.getNome());
+            System.out.println("Esta conectado ao chat: "+ usuario.getNome());
             cliente.setMeuUsuario(usuario);
             System.out.println("Digite \"sair\" a qualquer momento para sair.");
             while (!mensagem.equals("sair")) {
                 cliente.setUsuariosOnline(conServe.getNomesUsuariosConectados());
                 cliente.mostraUsuariosOnline();
                 cliente.recebeMensagem(conServe);
-                System.out.print("Digite \"todos\" ou nome do destinatário: ");
+                System.out.print("Digite \"todos\" ou nome do destinatario: ");
                 String dest = leia.nextLine();
+				//System.out.println("Para enviar arquivo digite: "arquivo" ");
+				//if(dest.equals("arquivo")){
+				//	cliente.requestDownload(conServe);
+				//}
                 if(dest.equals("sair")){
                     conServe.desconectaCliente(usuario);
                     System.exit(1);
@@ -42,7 +47,7 @@ public class ClienteChat {
                     mensagem = leia.nextLine();
                     cliente.enviarMensagem(conServe, dest, mensagem);
                 }else{
-                    System.out.println("O usuário : "+dest+" não está online");
+                    System.out.println("O usuario : "+dest+" não esta online");
                 }
             }
             System.out.println("Você se desconectou");
@@ -88,7 +93,7 @@ public class ClienteChat {
 
     public void mostraUsuariosOnline() throws RemoteException {
         Iterator it = getUsuariosOnline().iterator();
-        System.out.print("Usuários Online:\n");
+        System.out.print("Usuarios Online:\n");
         while (it.hasNext()) {
             String nome = (String) it.next();
             if (!nome.equals(getMeuUsuario().getNome())) {
@@ -125,5 +130,16 @@ public class ClienteChat {
     public void setUsuariosOnline(Set<String> usuariosOnline) {
         this.usuariosOnline = usuariosOnline;
     }
+	
+	/*public void requestDownload(IFServidor stub, String arquivo) throws RemoteException, FileNotFoundException, IOException {
+		File diretorio = new File(dir);
+		diretorio.mkdir();
+		if (stub.getDownload(arquivo) == null) {
+			System.out.println("Arquivo inexistente.");
+		} else {
+			File arquivoRecebido = stub.getDownload(arquivo);
+			System.out.println(arquivoRecebido.getAbsolutePath());
+		}
+	}*/
 
 }

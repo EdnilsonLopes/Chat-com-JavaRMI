@@ -24,7 +24,7 @@ public class UsuarioVO implements Serializable {
      * Status do Usuário
      */
     private StatusEnum status;
-
+	
     /**
      * Construtor
      */

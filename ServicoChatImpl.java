@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.File;
 
 public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat {
 
@@ -39,7 +40,7 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
         clientesConectados.add(usuario);
         nomesUsuarios.add(usuario.getNome());
         //contador += nomesUsuarios.size();
-        System.out.println("O Usuário "+ usuario.getNome()+ "  conectou-se");
+        System.out.println("O Usuario "+ usuario.getNome()+ "  conectou-se");
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
         clientesConectados.remove(usuario);
         nomesUsuarios.remove(usuario.getNome());
         //contador += nomesUsuarios.size();
-        System.out.println("Usuário "+usuario.getNome()+" saiu");
+        System.out.println("Usuario "+usuario.getNome()+" saiu");
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
 
     @Override
     public void enviaMensagemTodos(UsuarioVO usuario, String msg) throws RemoteException {
-        mensagens.put("todos", "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
+        mensagens.put("todos", "Mensagem\n---------------\n" + usuario.getNome() + ": " + msg);
         System.out.print("Mensagem enviada de " + usuario.getNome() + " para todos");
     }
     
@@ -100,5 +101,8 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     public Set<String> getNomesUsuarios() {
         return nomesUsuarios;
     }
-
+	/*public File getArquivo(String arquivo) throws RemoteException {
+		File arquivoEnviar = new File(dir+File.separator+arquivo);
+		return arquivoEnviar;
+	}*/
 }
