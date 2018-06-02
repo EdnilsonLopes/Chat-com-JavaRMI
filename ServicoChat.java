@@ -14,7 +14,7 @@ public interface ServicoChat extends Remote{
      * @param usuario Usuario (Cliente) que envia a mensagem.
      * @param msg Mensagem enviada.
      */
-    public void enviaMensagemTodos(UsuarioVO uuariso, String msg) throws RemoteException;
+    public void enviaMensagemTodos(UsuarioVO usuario, String msg) throws RemoteException;
 
     /**
      * Envia uma mensagem privada para um destinatário.
