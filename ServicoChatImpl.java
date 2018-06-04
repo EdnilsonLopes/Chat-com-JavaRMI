@@ -27,7 +27,8 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
      * Guarda todas as menságens enviadas pelos usuários com uma chave. A chave é 
      * nome do destinatário caso seja privada ou "todos" para mensagem publica.
      */
-    public Map<String, String> mensagens = new HashMap<>();
+    public Map<String, List<String>> mensagens = new HashMap<>();
+
 
     private int contador = 0;
 
@@ -53,13 +54,24 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
 
     @Override
     public void enviaMensagemPrivada(UsuarioVO usuario, String receptor, String msg) throws RemoteException {
-        mensagens.put(receptor, "Mensagem\n---------------" + usuario.getNome() + ": " + msg);
+        List<String> listaMsg = new ArrayList<>();
+        if(mensagens.containsKey(receptor)){
+            listaMsg = mensagens.get(receptor);
+        }
+        listaMsg.add(usuario.getNome() + ": " + msg);
+        mensagens.put(receptor, listaMsg);
+
         System.out.print("Mensagem enviada de " + usuario.getNome() + " para " + receptor);
     }
 
     @Override
     public void enviaMensagemTodos(UsuarioVO usuario, String msg) throws RemoteException {
-        mensagens.put("todos", "Mensagem\n---------------\n" + usuario.getNome() + ": " + msg);
+        List<String> listaMsg = new ArrayList<>();
+        if(mensagens.containsKey("todos")){
+            listaMsg = mensagens.get("todos");
+        }
+        listaMsg.add(usuario.getNome() + ": " + msg+"\n");
+        mensagens.put("todos", listaMsg);
         System.out.print("Mensagem enviada de " + usuario.getNome() + " para todos");
     }
     
@@ -69,14 +81,16 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     }
 
     @Override
-    public String getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException {
-        String msg = "";
+    public List<String> getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException {
+        List<String> msg = new ArrayList<>();
         if (getMensagens().containsKey(usuario.getNome())){
-            msg += getMensagens().get(usuario.getNome())+"\n";
+            msg.addAll(getMensagens().get(usuario.getNome()));
+            //Remove a mensagem já lida pelo receptor
             getMensagens().remove(usuario.getNome());
         }
         if (getMensagens().containsKey("todos")){
-            msg += getMensagens().get("todos")+"\n";
+            msg.add("---Mensagens de Todos---");
+            msg.addAll(getMensagens().get("todos"));
         }
         return msg;
     }
@@ -91,7 +105,7 @@ public class ServicoChatImpl extends UnicastRemoteObject implements ServicoChat 
     /**
      * @return as mensagens
      */
-    public Map<String, String> getMensagens() {
+    public Map<String, List<String>> getMensagens() {
         return mensagens;
     }
 

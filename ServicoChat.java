@@ -1,5 +1,6 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Set;
 
 public interface ServicoChat extends Remote{
@@ -38,5 +39,5 @@ public interface ServicoChat extends Remote{
     /**
      * Pega as mensagens enviadas ao Usuario parassado como parametro.
      */
-    public String getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException; 
+    public List<String> getMensagensEnvidadasParaUsuario(UsuarioVO usuario) throws RemoteException; 
 }

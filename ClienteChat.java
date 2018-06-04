@@ -2,6 +2,7 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.io.File;
@@ -63,10 +64,12 @@ public class ClienteChat {
      * Método que mostra as mensagens pro usuario
      */
     public void recebeMensagem(ServicoChat serv) throws RemoteException {
-        String msg = serv.getMensagensEnvidadasParaUsuario(getMeuUsuario());
-        if (!msg.equals("")){
-            System.out.print("\n----Novas Mensagens----- \n");
-            System.out.println(msg);
+        List<String> msg = serv.getMensagensEnvidadasParaUsuario(getMeuUsuario());
+        if (msg.size() > 0){
+            System.out.print("\n----Mensagens----- \n");
+            for(String m : msg){
+                System.out.println(m);
+            }
         }
         //System.out.println(msg);
     }
