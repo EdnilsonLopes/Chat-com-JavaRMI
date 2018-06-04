@@ -20,13 +20,19 @@ public class ClienteChat {
         String mensagem = "";
         try {
             conServe = (ServicoChat) Naming.lookup("//localhost/ServidorChat");
-            
+
             System.out.print("Digite seu nome: ");
             Scanner leia = new Scanner(System.in);
             String nome = leia.nextLine();
+            while (cliente.nomeEstaEmUso(nome, conServe)) {
+                System.out.print("Usuario em uso! Tente outro");
+                System.out.print("Digite seu nome: ");
+                leia = new Scanner(System.in);
+                nome = leia.nextLine();
+            }
             usuario.setNome(nome);
             conServe.conectaCliente(usuario);
-            System.out.println("Esta conectado ao chat: "+ usuario.getNome());
+            System.out.println("Esta conectado ao chat: " + usuario.getNome());
             cliente.setMeuUsuario(usuario);
             System.out.println("Digite \"sair\" a qualquer momento para sair.");
             while (!mensagem.equals("sair")) {
@@ -35,29 +41,33 @@ public class ClienteChat {
                 cliente.recebeMensagem(conServe);
                 System.out.print("Digite \"todos\" ou nome do destinatario: ");
                 String dest = leia.nextLine();
-				//System.out.println("Para enviar arquivo digite: "arquivo" ");
-				//if(dest.equals("arquivo")){
-				//	cliente.requestDownload(conServe);
-				//}
-                if(dest.equals("sair")){
+                // System.out.println("Para enviar arquivo digite: "arquivo" ");
+                // if(dest.equals("arquivo")){
+                // cliente.requestDownload(conServe);
+                // }
+                if (dest.equals("sair")) {
                     conServe.desconectaCliente(usuario);
                     System.exit(1);
                 }
-                if(cliente.isUsuarioOnline(dest)){
+                if (cliente.isUsuarioOnline(dest)) {
                     System.out.print("Digite sua mensagem: ");
                     mensagem = leia.nextLine();
                     cliente.enviarMensagem(conServe, dest, mensagem);
-                }else{
-                    System.out.println("O usuario : "+dest+" não esta online");
+                } else {
+                    System.out.println("O usuario : " + dest + " não esta online");
                 }
             }
             System.out.println("Você se desconectou");
             conServe.desconectaCliente(usuario);
 
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("O Servidor não está online... O programa Será Fechado...");
             e.printStackTrace();
         }
+    }
+
+    public boolean nomeEstaEmUso(String nome, ServicoChat serv) throws RemoteException {
+        return serv.getNomesUsuariosConectados().contains(nome);
     }
 
     /**
@@ -65,17 +75,18 @@ public class ClienteChat {
      */
     public void recebeMensagem(ServicoChat serv) throws RemoteException {
         List<String> msg = serv.getMensagensEnvidadasParaUsuario(getMeuUsuario());
-        if (msg.size() > 0){
+        if (msg.size() > 0) {
             System.out.print("\n----Mensagens----- \n");
-            for(String m : msg){
+            for (String m : msg) {
                 System.out.println(m);
             }
         }
-        //System.out.println(msg);
+        // System.out.println(msg);
     }
 
     /**
      * Método que verifica se o usuário está online
+     * 
      * @param nomeUsuario Nome do usuario que será verificado.
      * @return true para online false para offline
      */
@@ -86,10 +97,10 @@ public class ClienteChat {
         return false;
     }
 
-    public void enviarMensagem( ServicoChat servico, String nomeDestinatario, String msg) throws RemoteException {
-        if(nomeDestinatario.equalsIgnoreCase("todos")){
+    public void enviarMensagem(ServicoChat servico, String nomeDestinatario, String msg) throws RemoteException {
+        if (nomeDestinatario.equalsIgnoreCase("todos")) {
             servico.enviaMensagemTodos(getMeuUsuario(), msg);
-        }else{
+        } else {
             servico.enviaMensagemPrivada(getMeuUsuario(), nomeDestinatario, msg);
         }
     }
@@ -133,16 +144,14 @@ public class ClienteChat {
     public void setUsuariosOnline(Set<String> usuariosOnline) {
         this.usuariosOnline = usuariosOnline;
     }
-	
-	/*public void requestDownload(IFServidor stub, String arquivo) throws RemoteException, FileNotFoundException, IOException {
-		File diretorio = new File(dir);
-		diretorio.mkdir();
-		if (stub.getDownload(arquivo) == null) {
-			System.out.println("Arquivo inexistente.");
-		} else {
-			File arquivoRecebido = stub.getDownload(arquivo);
-			System.out.println(arquivoRecebido.getAbsolutePath());
-		}
-	}*/
+
+    /*
+     * public void requestDownload(IFServidor stub, String arquivo) throws
+     * RemoteException, FileNotFoundException, IOException { File diretorio = new
+     * File(dir); diretorio.mkdir(); if (stub.getDownload(arquivo) == null) {
+     * System.out.println("Arquivo inexistente."); } else { File arquivoRecebido =
+     * stub.getDownload(arquivo);
+     * System.out.println(arquivoRecebido.getAbsolutePath()); } }
+     */
 
 }
